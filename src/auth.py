@@ -85,16 +85,13 @@ def get_spotify_client() -> spotipy.Spotify:
             "log in, and authorize. Then, run the `complete_auth` tool with the redirect URL."
         )
     
-    # Lazy creation or updating token on existing instance
+    # Lazy creation of the Spotify client using the oauth manager.
+    # We do not pass `auth=...` directly because that bypasses auto-refreshing.
     if _spotify_client is None:
         _spotify_client = spotipy.Spotify(
-            auth=token_info['access_token'],
             auth_manager=oauth_manager,
             requests_timeout=10
         )
-    else:
-        # Update token if it was refreshed
-        _spotify_client.auth = token_info['access_token']
         
     return _spotify_client
 

@@ -6,3 +6,6 @@ __pycache__/
 # Local Credentials Cache
 .env
 .spotify_token_cache
+
+# Logs
+*.log

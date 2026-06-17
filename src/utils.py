@@ -226,3 +226,101 @@ def format_playback_state(state: dict) -> str:
     ]
     
     return "\n".join(lines)
+
+
+def scrape_genius_lyrics(song_title: str, artist_name: str = "") -> str:
+    """Scrapes lyrics from Genius.com without requiring an API key."""
+    import requests
+    from bs4 import BeautifulSoup
+    import urllib.parse
+    import re
+    
+    query = f"{song_title} {artist_name}".strip()
+    logger.info(f"Searching Genius lyrics for query: '{query}'")
+    
+    # 1. Search Genius songs endpoint
+    search_url = f"https://genius.com/api/search/song?q={urllib.parse.quote(query)}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    
+    try:
+        r = requests.get(search_url, headers=headers, timeout=10)
+        r.raise_for_status()
+        search_results = r.json()
+    except Exception as e:
+        logger.error(f"Failed to query Genius search API: {e}")
+        return f"Error: Failed to query Genius search API: {str(e)}"
+        
+    # Extract song hits
+    hits = []
+    try:
+        sections = search_results.get("response", {}).get("sections", [])
+        for section in sections:
+            if section.get("type") == "song":
+                hits = section.get("hits", [])
+                break
+    except Exception as e:
+        logger.error(f"Error parsing Genius search results structure: {e}")
+        
+    if not hits:
+        return f"Could not find any song lyrics on Genius matching query: '{query}'."
+        
+    # Get top hit song details
+    top_hit = hits[0].get("result", {})
+    song_url = top_hit.get("url")
+    full_title = top_hit.get("full_title")
+    
+    if not song_url:
+        return f"Could not retrieve lyrics URL for: '{full_title}'."
+        
+    logger.info(f"Found song page on Genius: {song_url}")
+    
+    # 2. Fetch lyrics page
+    try:
+        r = requests.get(song_url, headers=headers, timeout=10)
+        r.raise_for_status()
+        html = r.text
+    except Exception as e:
+        logger.error(f"Failed to fetch Genius page {song_url}: {e}")
+        return f"Error: Failed to fetch lyrics page from Genius: {str(e)}"
+        
+    # 3. Parse HTML
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+        
+        # Genius lyrics are typically stored in div[class^="Lyrics__Container"]
+        lyrics_divs = soup.select('div[class^="Lyrics__Container"]')
+        
+        # Fallback to older container class if needed
+        if not lyrics_divs:
+            lyrics_divs = soup.select('.song_body-lyrics p')
+            
+        if not lyrics_divs:
+            # Check if it is an instrumental song
+            if "instrumental" in html.lower() and "lyrics" not in html.lower():
+                return f"### {full_title}\n\n*This song is instrumental (no lyrics).* \n\nSource: [Genius]({song_url})"
+            return f"Could not find lyrics container on the webpage for: '{full_title}'. Genius might have changed their layout."
+            
+        # Extract and format text from all containers
+        lyrics_parts = []
+        for div in lyrics_divs:
+            # Replace <br> tags with newlines
+            for br in div.find_all("br"):
+                br.replace_with("\n")
+            
+            # Extract clean text with newlines
+            text = div.get_text()
+            if text:
+                lyrics_parts.append(text.strip())
+                
+        full_lyrics = "\n\n".join(lyrics_parts)
+        
+        # Clean up double/triple newlines
+        full_lyrics = re.sub(r'\n{3,}', '\n\n', full_lyrics)
+        
+        return f"### {full_title}\n\n{full_lyrics}\n\n---\n*Source: [Genius]({song_url})*"
+        
+    except Exception as e:
+        logger.exception("Error parsing lyrics from Genius HTML")
+        return f"Error: Failed to parse lyrics from Genius page: {str(e)}"

@@ -542,6 +542,18 @@ def remove_tracks(track_uris: str) -> str:
     sp.current_user_saved_tracks_delete(tracks=resolved_uris)
     return f"Successfully removed {len(resolved_uris)} track(s) from your Liked Songs."
 
+@mcp.tool()
+def get_lyrics(song_title: str, artist_name: str = "") -> str:
+    """Get the lyrics for a specific song from Genius.com.
+    
+    If the artist_name is not provided, the tool will try to search for the song_title alone.
+    
+    Args:
+        song_title: The title of the song to search for.
+        artist_name: Optional. The name of the artist of the song.
+    """
+    return utils.scrape_genius_lyrics(song_title, artist_name)
+
 
 # =====================================================================
 # SERVER RUNNER

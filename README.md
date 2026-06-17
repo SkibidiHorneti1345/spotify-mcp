@@ -145,3 +145,7 @@ The server exposes 24 tools categorized as follows:
 | | `get_user_saved_tracks`| Lists Liked Songs. |
 | | `save_tracks` | Adds tracks to Liked Songs. |
 | | `remove_tracks` | Removes tracks from Liked Songs. |
+
+--
+
+Project is created with Gemini Antigravity, with much love.

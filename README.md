@@ -1,7 +1,5 @@
 # Spotify Model Context Protocol (MCP) Server
 
-![Spotify MCP Banner](assets/banner.png)
-
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue.svg?style=flat-square" alt="Python Version">
   <img src="https://img.shields.io/badge/Framework-FastMCP-green.svg?style=flat-square" alt="FastMCP">
@@ -16,18 +14,18 @@ Built in Python using **FastMCP** and **Spotipy**, this server includes connecti
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🎵 **Playback Control**: Play tracks/albums/playlists, pause, skip, adjust volume, toggle shuffle/repeat, and transfer playback between devices.
-- 🔍 **Search & Discovery**: Search tracks, artists, albums, and playlists, and get tailored music recommendations based on genres/artists.
-- 📚 **Library Management**: View and modify your "Liked Songs" library and create/manage playlists.
-- 🔑 **Dual Authentication**: Local web redirect or manual copy-paste fallback designed to run seamlessly through the agent interface.
-- 🔄 **Robust Connection Handling**: Connection pooling via `requests.Session` and thread-safe automatic token refreshing to prevent memory leaks and credentials expiration crashes.
-- 🛡️ **Log Safety**: All server logs and debug outputs are isolated to `stderr`, leaving `stdout` purely for MCP protocol messages.
+- **Playback Control**: Play tracks/albums/playlists, pause, skip, adjust volume, toggle shuffle/repeat, and transfer playback between devices.
+- **Search & Discovery**: Search tracks, artists, albums, and playlists, and get tailored music recommendations based on genres/artists.
+- **Library Management**: View and modify your "Liked Songs" library and create/manage playlists.
+- **Dual Authentication**: Local web redirect or manual copy-paste fallback designed to run seamlessly through the agent interface.
+- **Robust Connection Handling**: Connection pooling via `requests.Session` and thread-safe automatic token refreshing to prevent memory leaks and credentials expiration crashes.
+- **Log Safety**: All server logs and debug outputs are isolated to `stderr`, leaving `stdout` purely for MCP protocol messages.
 
 ---
 
-## ⚙️ Setup & Configuration
+## Setup & Configuration
 
 ### Prerequisites
 - Python 3.10+
@@ -54,7 +52,7 @@ SPOTIPY_REDIRECT_URI=http://127.0.0.1:8080/callback
 
 ---
 
-## 🛠️ Installation & Running
+## Installation & Running
 
 Ensure you have created the virtual environment and installed dependencies:
 
@@ -78,7 +76,7 @@ mcp dev src/server.py
 
 ---
 
-## 🔌 Client Integration
+## Client Integration
 
 Add the server to your MCP client configuration (e.g., Cursor, Claude Desktop, or custom MCP client).
 
@@ -105,7 +103,7 @@ For example, in `claude_desktop_config.json`:
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 Because MCP servers run in background processes without terminal input, the server supports a smooth **dual-authentication** flow:
 
@@ -125,7 +123,7 @@ If Flow 1 is blocked or you are running the agent on a remote environment:
 
 ---
 
-## 🧰 Available Tools
+## Available Tools
 
 The server exposes 24 tools categorized as follows:
 

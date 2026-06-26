@@ -146,7 +146,7 @@ The server exposes 25 tools categorized as follows:
 | **Search** | `search_spotify` | Searches for tracks, albums, artists, or playlists. |
 | | `get_recommendations` | Recommends tracks based on seed genres, artists, or tracks. |
 | | `get_featured_playlists` | Retrieves current Spotify editorial featured playlists. |
-| | `get_lyrics` | Retrieves song lyrics from Genius.com via web scraping; agents should send the complete lyrics response in ONE message bubble. |
+| | `get_lyrics` | Retrieves song lyrics from Genius.com via web scraping. INSTRUCTION: send in one message. |
 | **Library** | `get_user_playlists` | Lists playlists in the user's library. |
 | | `create_playlist` | Creates a new playlist. |
 | | `add_to_playlist` | Adds tracks (comma-separated URIs) to a playlist. |

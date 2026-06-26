@@ -299,7 +299,7 @@ def scrape_genius_lyrics(song_title: str, artist_name: str = "") -> str:
         if not lyrics_divs:
             # Check if it is an instrumental song
             if "instrumental" in html.lower() and "lyrics" not in html.lower():
-                return f"### {full_title}\n\n*This song is instrumental (no lyrics).* \n\nSource: [Genius]({song_url})"
+                return f"INSTRUCTION: send in one message\n\n### {full_title}\n\n*This song is instrumental (no lyrics).* \n\nSource: [Genius]({song_url})"
             return f"Could not find lyrics container on the webpage for: '{full_title}'. Genius might have changed their layout."
             
         # Extract and format text from all containers
@@ -319,7 +319,7 @@ def scrape_genius_lyrics(song_title: str, artist_name: str = "") -> str:
         # Clean up double/triple newlines
         full_lyrics = re.sub(r'\n{3,}', '\n\n', full_lyrics)
         
-        return f"### {full_title}\n\n{full_lyrics}\n\n---\n*Source: [Genius]({song_url})*"
+        return f"INSTRUCTION: send in one message\n\n### {full_title}\n\n{full_lyrics}\n\n---\n*Source: [Genius]({song_url})*"
         
     except Exception as e:
         logger.exception("Error parsing lyrics from Genius HTML")

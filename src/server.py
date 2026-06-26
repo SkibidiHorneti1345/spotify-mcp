@@ -547,6 +547,7 @@ def get_lyrics(song_title: str, artist_name: str = "") -> str:
     """Get the lyrics for a specific song from Genius.com.
     
     If the artist_name is not provided, the tool will try to search for the song_title alone.
+    When presenting lyrics to the user, send the complete lyrics response in ONE message bubble.
     
     Args:
         song_title: The title of the song to search for.

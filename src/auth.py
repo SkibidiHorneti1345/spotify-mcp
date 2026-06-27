@@ -20,19 +20,34 @@ SPOTIFY_SCOPES = [
 ]
 SCOPE_STR = " ".join(SPOTIFY_SCOPES)
 
-# Global Spotify client cache for connection reuse
+# Global Spotify/OAuth caches for connection reuse
 _spotify_client = None
+_oauth_manager = None
+_oauth_manager_config = None
 
 def get_oauth_manager():
     """Initializes and returns the SpotifyOAuth manager.
     Returns None if client credentials are not configured.
     """
+    global _oauth_manager, _oauth_manager_config
+
     if not config.CLIENT_ID or not config.CLIENT_SECRET:
         logger.debug("Spotify Client ID or Secret is missing in config.")
         return None
+
+    cache_key = (
+        config.CLIENT_ID,
+        config.CLIENT_SECRET,
+        config.REDIRECT_URI,
+        config.CACHE_PATH,
+        SCOPE_STR,
+    )
+
+    if _oauth_manager is not None and _oauth_manager_config == cache_key:
+        return _oauth_manager
     
     try:
-        return SpotifyOAuth(
+        _oauth_manager = SpotifyOAuth(
             client_id=config.CLIENT_ID,
             client_secret=config.CLIENT_SECRET,
             redirect_uri=config.REDIRECT_URI,
@@ -40,8 +55,12 @@ def get_oauth_manager():
             cache_path=config.CACHE_PATH,
             open_browser=False  # Non-interactive CLI environment
         )
+        _oauth_manager_config = cache_key
+        return _oauth_manager
     except SpotifyOauthError as e:
         logger.error(f"Failed to create SpotifyOAuth manager: {e}")
+        _oauth_manager = None
+        _oauth_manager_config = None
         return None
 
 def is_authenticated() -> bool:
